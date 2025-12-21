@@ -57,7 +57,6 @@ const wechatMiniLogin = () => {
 
 const getAuthUrl = (appId) => {
 	  // #ifdef H5
-	  // #endif
 	  cookie.set('redirect', window.location.href)
 	  const url = `${location.origin}/h5/#/pages/index/index`
 	  cookie.set('index_url',url)
@@ -65,6 +64,7 @@ const getAuthUrl = (appId) => {
 	
 	  const state = 'STATE'
 	  return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`
+	  // #endif
  }
  
 const oAuth = async() => {
@@ -80,7 +80,9 @@ const oAuth = async() => {
 		if (!code) {
 		  //公众号appid
 		  const appid = APP_ID;
+		  // #ifdef H5
 		  location.href = getAuthUrl(appid)
+		  // #endif
 		  return
 		} else {
 		 auth(code)

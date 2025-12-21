@@ -119,9 +119,11 @@ export function kmUnit(m){
 }
 
 export function isWeixin() {
+	// #ifdef H5
 	if (navigator && navigator.userAgent && navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1) {
 	  return true
 	}
+	// #endif
 	return false
   }
   

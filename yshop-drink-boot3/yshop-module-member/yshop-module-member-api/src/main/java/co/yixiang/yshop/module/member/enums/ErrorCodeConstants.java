@@ -27,5 +27,6 @@ public interface ErrorCodeConstants {
     ErrorCode MINI_AUTH_LOGIN_BAD = new ErrorCode(1004004002, "登录失败，请联系管理员");
     ErrorCode COUPON_NOT_CONDITION = new ErrorCode(1004004003, "此优惠券不满足使用提交");
     ErrorCode MINI_AUTH_LOGIN_BAD2 = new ErrorCode(1004004002, "登录失败，请返回首页刷新重新登录");
+    ErrorCode MINI_AUTH_LOGIN_IP_WHITELIST = new ErrorCode(1004004004, "登录失败：服务器IP未在微信小程序白名单中，请联系管理员配置");
 
 }

@@ -222,8 +222,17 @@ public class MemberAuthServiceImpl implements MemberAuthService {
             return appAuthLoginRespVO;
 
         } catch (WxErrorException e) {
-            log.error(e.getMessage());
-            throw exception(MINI_AUTH_LOGIN_BAD);
+            log.error("错误代码：{}, 错误信息：{}，微信原始报文：{}", e.getErrorCode(), e.getErrorMsg(), e.getJson());
+            // 根据微信错误码返回更具体的错误信息
+            if (e.getErrorCode() == 40164) {
+                // IP 白名单错误
+                throw exception(MINI_AUTH_LOGIN_IP_WHITELIST);
+            } else if (e.getErrorCode() == 40029) {
+                // code 无效或已过期
+                throw exception(MINI_AUTH_LOGIN_BAD2);
+            } else {
+                throw exception(MINI_AUTH_LOGIN_BAD);
+            }
         }
     }
 
@@ -302,8 +311,17 @@ public class MemberAuthServiceImpl implements MemberAuthService {
                 userMapper.updateById(memberUserDO);
             }
         }catch (WxErrorException e) {
-            log.error(e.getMessage());
-            throw exception(MINI_AUTH_LOGIN_BAD);
+            log.error("错误代码：{}, 错误信息：{}，微信原始报文：{}", e.getErrorCode(), e.getErrorMsg(), e.getJson());
+            // 根据微信错误码返回更具体的错误信息
+            if (e.getErrorCode() == 40164) {
+                // IP 白名单错误
+                throw exception(MINI_AUTH_LOGIN_IP_WHITELIST);
+            } else if (e.getErrorCode() == 40029) {
+                // code 无效或已过期
+                throw exception(MINI_AUTH_LOGIN_BAD2);
+            } else {
+                throw exception(MINI_AUTH_LOGIN_BAD);
+            }
         }
 
         // 创建 Token 令牌，记录登录日志

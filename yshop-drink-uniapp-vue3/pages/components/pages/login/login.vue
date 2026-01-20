@@ -108,14 +108,27 @@ const wechatMiniLogin = () => {
 	uni.login({
 		provider: 'weixin'
 	}).then(async (res) => {
-		let data = await userAuthSession({
-			code: res.code
-		});
-		if (data) {
-			console.log('data.openId001:',data.openId)
-			main.SET_OPENID(data.openId)
-			openid.value = data.openId
+		try {
+			console.log('获取微信code:', res.code)
+			let data = await userAuthSession({
+				code: res.code
+			});
+			if (data) {
+				console.log('data.openId001:',data.openId)
+				main.SET_OPENID(data.openId)
+				openid.value = data.openId
+			}
+		} catch (error) {
+			console.error('获取openid失败:', error)
+			// 如果获取openid失败，不阻止用户继续操作，但记录错误
+			// 用户可能可以通过其他方式登录
 		}
+	}).catch((error) => {
+		console.error('uni.login失败:', error)
+		uToast.value.show({
+			message: '获取微信登录信息失败，请重试',
+			type: 'error'
+		});
 	});
 }
 
@@ -128,6 +141,19 @@ const loginForWechatMini = async (e) => {
 			type: 'error'
 		});
 		return
+	}
+	// 确保 openid 存在
+	if (!openid.value) {
+		// 如果 openid 不存在，先获取
+		await wechatMiniLogin();
+		// 如果获取后仍然为空，提示错误
+		if (!openid.value) {
+			uToast.value.show({
+				message: '获取用户信息失败，请重试',
+				type: 'error'
+			});
+			return
+		}
 	}
 	if (e.detail.encryptedData && e.detail.iv) {
 		let data = await userLoginForWechatMini({
